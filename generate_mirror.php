@@ -1,11 +1,12 @@
 <?php
 ob_start();
 
-// ***** put the files you want here *****
 $phpFiles = [
     'index.php',
     'about.php',
     'contact.php',
+    'blog.php',
+    'events.php',
 ];
 
 $outputDir = __DIR__ . '/mirror_html';
@@ -51,9 +52,19 @@ if (!file_exists('node_modules/tailwindcss')) {
     shell_exec('npm install tailwindcss');
 }
 
-if (!file_exists('tailwind.config.js')) {
+$tailwindConfigPath = $outputDir . '/tailwind.config.js';
+if (!file_exists($tailwindConfigPath)) {
     echo "Generating Tailwind CSS config...\n";
-    shell_exec('npx tailwindcss init');
+    $tailwindConfigContent = <<<CONFIG
+module.exports = {
+    content: ['./*.html'],
+    theme: {
+        extend: {},
+    },
+    plugins: [],
+};
+CONFIG;
+    file_put_contents($tailwindConfigPath, $tailwindConfigContent);
 }
 
 $cssInputPath = $outputDir . '/input.css';
